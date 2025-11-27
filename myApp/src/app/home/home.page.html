@@ -1,20 +1,50 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Mis Targets</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">Cerrar sesión</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="home-container ion-padding">
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <div class="upload-section">
+    <ion-item>
+      <ion-label>Seleccionar archivos</ion-label>
+      <!-- Input múltiple para NFT (.iset, .fset, .fset3), .patt y .jpg/.png -->
+      <input type="file" (change)="onFilesSelected($event)" multiple />
+    </ion-item>
+    <p class="info-text">
+      Puedes subir los 3 archivos NFT juntos (.iset, .fset, .fset3), un marker (.patt) o una imagen (.jpg/.png).
+    </p>
   </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando tus targets...</p>
+  </div>
+
+  <ion-list *ngIf="!isLoading && targets.length > 0">
+    <ion-item *ngFor="let target of targets">
+      <ion-label>
+        <h2>{{ target.name }}</h2>
+        <p>Tipo: {{ target.type }}</p>
+        <p *ngIf="target.contenturl">URL: {{ target.contenturl }}</p>
+        <p *ngIf="target.patternurl">Pattern: {{ target.patternurl }}</p>
+        <p *ngIf="target.nfturlbase">NFT Base: {{ target.nfturlbase }}</p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="primary" (click)="editTarget(target)">Editar</ion-button>
+        <ion-button color="danger" (click)="deleteTarget(target)">Eliminar</ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="!isLoading && targets.length === 0" class="empty-message">
+    <p>No tienes targets aún. ¡Sube uno para empezar!</p>
+  </div>
+
+  <ion-button expand="block" routerLink="/ar-view">Abrir AR</ion-button>
+
 </ion-content>
